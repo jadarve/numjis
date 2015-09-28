@@ -5,6 +5,9 @@ lib
 # local folder with test code
 local
 
+# documentation output
+docs
+
 
 ###########################################################
 # Sublime Text

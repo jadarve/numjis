@@ -1,8 +1,8 @@
 error = require('./error')
 
-###########################################################
-# Array data types
-###########################################################
+###
+Unsigned Integer 8 bits
+###
 uint8 =
     size : 1
     name : 'uint8'
@@ -36,13 +36,67 @@ float64 =
     name : 'float64'
 
 
-###########################################################
-# ND-Array class
-###########################################################
 
+###
+N-Dimensional array container
+
+This class provides the functionality of a N-Dimensional
+array container similar to those of Numpy and Matlab.
+
+###
 class NDArray
 
+    ###
+    @property [int array] Array shape. List of positive integers
+      with the size of the array in each dimension.
+    ###
+    shape : []
+
+    ###
+    @property [int] Number of dimensions.
+    ###
+    ndim : 0
+
+    ###
+    @property [dtype] Array element data type.
+    ###
+    dtype : float32
+
+    ###
+    @property [int array]
+    ###
+    stride : []
+
+    ###
+    @property [int] length Total number of elements in the array.
+    ###
+    length : 0
+
+    ###
+    @property [ArrayBuffer] Storage space for array elements.
+    ###
+    buffer : null
+
+    ###
+    @property [dtype Array] dtype view of the array.
+    ###
+    data : null
+    
+    ###
+    Creates a new ND-array of given shape and type
+    
+    @param [int array] shape Array shape.
+      List of positive integer with the size of each dimension.
+    @param [dtype, optional] dtype Array data type.
+      It must be one of the following values:
+      @see{uint8}
+      {uint8, int8, uint16, int16, uint32, int32, float32, float64}
+    @param [ArrayBuffer, optional] buffer buffer to store the array elements.
+      The length in bytes should be equal to total number of 
+      elements times the element size in bytes.
+    ###
     constructor: (shape, dtype=float32, buffer=null) ->
+        
 
         # TODO: validate shape
         @shape = shape
@@ -88,12 +142,21 @@ class NDArray
             else throw new error.NumjisException('Unexpected array type, got: ' + @dtype)
 
 
-###########################################################
-# Module functions
-###########################################################
+
+
+arange = (start, stop, step, dtype) ->
+    return
+
 
 copy = (arr) ->
-    return
+
+    if !arr instanceof NDArray
+        throw new error.NumjisException('Array argument must be and instance of NDArray')
+
+    # creates a copy of the storage buffer
+    bufferCopy = arr.buffer.slice(0)
+    return new NDArray(arr.shape, arr.dtype, bufferCopy)
+
 
 decode = (str, base) ->
     return

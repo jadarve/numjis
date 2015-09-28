@@ -1,4 +1,11 @@
 
+# lib folder with built Javascript
+lib
+
+# local folder with test code
+local
+
+
 ###########################################################
 # Sublime Text
 ###########################################################

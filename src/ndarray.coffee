@@ -1,4 +1,3 @@
-
 error = require('./error')
 
 ###########################################################
@@ -42,9 +41,6 @@ float64 =
 ###########################################################
 
 class NDArray
-    """
-    N-dimentional array class
-    """
 
     constructor: (shape, dtype=float32, buffer=null) ->
 
@@ -59,7 +55,6 @@ class NDArray
 
         if @ndim > 1
             for i in [shape.length-2..0]
-                console.log('i: ' + i)
                 @stride[i] = @stride[i+1]*@shape[i+1]
 
         # total number of elements in the buffer

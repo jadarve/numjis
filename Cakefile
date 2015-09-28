@@ -91,6 +91,8 @@ task 'test', 'run tests', -> build -> mocha -> log ":)", green
 # ```
 task 'clean', 'clean generated files', -> clean -> log ";)", green
 
+task 'bundle', 'creates a bundled JS file', -> bundle -> log ":)", green
+
 
 # Internal Functions
 #
@@ -241,3 +243,9 @@ docco = (callback) ->
   #if moduleExists('docco')
   walk 'src', (err, files) -> launch 'docco', files, callback
 
+
+# ## *bundle*
+#
+# creates a bundles JS file wit the implementation
+bundle = () ->
+  launch 'browserify',  ['lib/numjis.js -o local/numjis_bundle.js'], bundle_callback

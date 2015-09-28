@@ -7,30 +7,51 @@ uint8 =
     size : 1
     name : 'uint8'
 
+###
+Integer 8 bits
+###
 int8 =
     size : 1
     name : 'int8'
 
+###
+Unsigned Integer 16 bits
+###
 uint16 =
     size : 2
     name : 'uint16'
 
+###
+Integer 16 bits
+###
 int16 =
     size : 2
     name : 'int16'
 
+###
+Unsigned Integer 16 bits
+###
 uint32 =
     size : 4
     name : 'uint16'
 
+###
+Integer 32 bits
+###
 int32 =
     size : 4
     name : 'int32'
 
+###
+Floating point number 32 bits
+###
 float32 =
     size : 4
     name : 'float32'
 
+###
+Floating point number 64 bits
+###
 float64 =
     size : 8
     name : 'float64'
@@ -144,7 +165,7 @@ class NDArray
 
 
 
-arange = (start, stop, step, dtype) ->
+arange = (start, stop, step=1, dtype=null) ->
     return
 
 

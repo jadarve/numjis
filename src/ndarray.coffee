@@ -94,6 +94,11 @@ class NDArray
     length : 0
 
     ###
+    @property [int] byteLength Total length of the array in bytes.
+    ###
+    byteLength : 0
+
+    ###
     @property [ArrayBuffer] Storage space for array elements.
     ###
     buffer : null
@@ -134,11 +139,12 @@ class NDArray
 
         # total number of elements in the buffer
         @length = @stride[0]*@shape[0]
+        @byteLength = @length*@dtype.size
 
         # Buffer allocation
         if buffer == null
             # allocates data buffer
-            @buffer = new ArrayBuffer(@length*@dtype.size)
+            @buffer = new ArrayBuffer(@byteLength)
 
         else
             # check if the byte length is the required
@@ -165,11 +171,25 @@ class NDArray
 
 
 
-arange = (start, stop, step=1, dtype=null) ->
-    return
+arange = (start, stop, step=1, dtype=float32) ->
+
+    length = Math.floor((stop-start)/step)
+
+    arr = new NDArray([length], dtype)
+    for n in [0..arr.length]
+        arr.data[n] = start + n*step
+
+    return arr
 
 
 copy = (arr) ->
+    ###
+    Returns a copy of an array
+
+    @param [arr, NDArray] array to copy
+
+    @return [cpy, NDArray] array copy.
+    ###
 
     if !arr instanceof NDArray
         throw new error.NumjisException('Array argument must be and instance of NDArray')
@@ -179,8 +199,19 @@ copy = (arr) ->
     return new NDArray(arr.shape, arr.dtype, bufferCopy)
 
 
-decode = (str, base) ->
-    return
+# NOTE: This is not working! write own base64 coding/decoding?
+atob = require('atob')
+btoa = require('btoa')
+decode = (str, shape, dtype) ->
+    
+    try
+        buffer = new ArrayBuffer(btoa(str))
+
+    catch err # InvalidCharacterError from atob
+        throw new error.NumjisException('Error decoding array data: ' + err)
+
+    return new NDArray(shape, dtype, buffer)
+
 
 reshape = (arr, shape) ->
     return
@@ -203,6 +234,7 @@ module.exports =
 
     # functions
     copy : copy
+    arange : arange
     decode : decode
     reshape : reshape
 

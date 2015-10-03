@@ -243,9 +243,12 @@ docco = (callback) ->
   #if moduleExists('docco')
   walk 'src', (err, files) -> launch 'docco', files, callback
 
+bundle_callback = ->
+  return
 
 # ## *bundle*
 #
 # creates a bundles JS file wit the implementation
 bundle = () ->
-  launch 'browserify',  ['lib/numjis.js -o local/numjis_bundle.js'], bundle_callback
+  launch 'browserify',  ['lib/numjis.js -o lib/numjis_bundle.js'], bundle_callback
+

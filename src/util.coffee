@@ -13,32 +13,73 @@ print = (arr) ->
     console.log(dataStr)
 
 
+###
+Base 64 code used at toBase64 and fromBase64 methods
+###
 base64Code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='
 
-toBase64 = (arr) ->
 
-    if !arr instanceof nd.NDArray
-        throw 'argument is not a NDArray object'
+###
+Encodes and ArrayBuffer object to base 64.
+
+@param [ArrayBuffer] buffer ArrayBuffer to enconde.
+
+@return Base 64 encoded String.
+###
+toBase64 = (buffer) ->
+
+    if !buffer instanceof ArrayBuffer
+        throw 'argument is not an ArrayBuffer object'
 
     code = []
 
-    # scan arr.buffer to create the encoding
-    for n in [0..arr.byteLength] by 3
+    # creates a uint8 view of the buffer
+    buffer_u8 = new Uint8Array(buffer)
+
+    # number of bytes contained in buffer that
+    # are multiple of 3
+    mod = buffer.byteLength % 3
+    N = (buffer.byteLength) - mod
+
+    # encode the first N bytes of buffer
+    for n in [0...N] by 3
+        console.log('n: ' + n)
 
         # read next three bytes to encode
-        [b0, b1, b2] = (arr[n+i] for i in [0..2])
+        word = (buffer_u8[n] << 16) | (buffer_u8[n+1] << 8) | buffer_u8[n+2]
 
-        word = (b0 << 16) | (b1 << 8) | b2
+        # get the character indices from word and
+        # transform it to text
+        code.push(base64Code[(word & 0xFC0000) >> 18])
+        code.push(base64Code[(word & 0x03F000) >> 12])
+        code.push(base64Code[(word & 0x03F000) >> 12])
+        code.push(base64Code[(word & 0x00003F)])
 
-        w0 = (word & (0x00003F << 18)) >> 18
-        w1 = (word & (0x00003F << 12)) >> 12
-        w2 = (word & (0x00003F << 6)) >> 6
-        w3 = (word & 0x00003F)
 
-        code.push(base64Code[w0])
-        code.push(base64Code[w1])
-        code.push(base64Code[w2])
-        code.push(base64Code[w3])
+    # encode the last bytes of buffer
+    word = 0
+    switch(mod)
+
+        when 0
+            # nothing to do, all bytes in buffer
+            # were encoded in the for loop
+            break
+
+        when 1
+            word = (buffer_u8[N] << 16)
+
+            code.push(base64Code[(word & 0xFC0000) >> 18])
+            code.push(base64Code[(word & 0x03F000) >> 12])
+            code.push(base64Code[64])   # padding
+            code.push(base64Code[64])   # padding
+
+        when 2
+            word = (buffer_u8[N] << 16) | (buffer_u8[N+1] << 8)
+
+            code.push(base64Code[(word & 0xFC0000) >> 18])
+            code.push(base64Code[(word & 0x03F000) >> 12])
+            code.push(base64Code[(word & 0x000FC0) >> 6])
+            code.push(base64Code[64])   # padding
 
     return code.join('')
 

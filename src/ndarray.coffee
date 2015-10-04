@@ -200,12 +200,13 @@ copy = (arr) ->
 
 
 # NOTE: This is not working! write own base64 coding/decoding?
-atob = require('atob')
-btoa = require('btoa')
+# atob = require('atob')
+# btoa = require('btoa')
 decode = (str, shape, dtype) ->
     
     try
-        buffer = new ArrayBuffer(btoa(str))
+        # buffer = new ArrayBuffer(btoa(str))
+        return
 
     catch err # InvalidCharacterError from atob
         throw new error.NumjisException('Error decoding array data: ' + err)

@@ -18,6 +18,15 @@ Base 64 code used at toBase64 and fromBase64 methods
 ###
 base64Code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='
 
+###
+Char codes for base64Code string
+###
+base64CharCode = new Uint8Array(base64Code.length)
+
+# get char codes from base64Code
+for i in [0...base64Code.length]
+    base64CharCode[i] = base64Code.charCodeAt(i)
+
 
 ###
 Encodes and ArrayBuffer object to base 64.
@@ -31,8 +40,6 @@ toBase64 = (buffer) ->
     if !buffer instanceof ArrayBuffer
         throw 'argument is not an ArrayBuffer object'
 
-    code = []
-
     # creates a uint8 view of the buffer
     buffer_u8 = new Uint8Array(buffer)
 
@@ -41,19 +48,25 @@ toBase64 = (buffer) ->
     mod = buffer.byteLength % 3
     N = (buffer.byteLength) - mod
 
+    # size of the encoded array, including padding
+    S = 4*(N/3) + (if mod != 0 then 4 else 0)
+
+    # stores the char codes for the string
+    codeBuffer = new Uint8Array(S)
+
+    # index to scan codeBuffer
+    s = -1
+
     # encode the first N bytes of buffer
     for n in [0...N] by 3
-        console.log('n: ' + n)
-
         # read next three bytes to encode
         word = (buffer_u8[n] << 16) | (buffer_u8[n+1] << 8) | buffer_u8[n+2]
 
-        # get the character indices from word and
-        # transform it to text
-        code.push(base64Code[(word & 0xFC0000) >> 18])
-        code.push(base64Code[(word & 0x03F000) >> 12])
-        code.push(base64Code[(word & 0x03F000) >> 12])
-        code.push(base64Code[(word & 0x00003F)])
+        # get the character code for each element of word
+        codeBuffer[++s] = base64CharCode[(word & 0xFC0000) >> 18]
+        codeBuffer[++s] = base64CharCode[(word & 0x03F000) >> 12]
+        codeBuffer[++s] = base64CharCode[(word & 0x000FC0) >> 6]
+        codeBuffer[++s] = base64CharCode[(word & 0x00003F)]
 
 
     # encode the last bytes of buffer
@@ -66,22 +79,28 @@ toBase64 = (buffer) ->
             break
 
         when 1
+            # read one byte only
             word = (buffer_u8[N] << 16)
 
-            code.push(base64Code[(word & 0xFC0000) >> 18])
-            code.push(base64Code[(word & 0x03F000) >> 12])
-            code.push(base64Code[64])   # padding
-            code.push(base64Code[64])   # padding
+            # get the character code for each element of word
+            codeBuffer[++s] = base64CharCode[(word & 0xFC0000) >> 18]
+            codeBuffer[++s] = base64CharCode[(word & 0x03F000) >> 12]
+            codeBuffer[++s] = base64CharCode[64]    # padding
+            codeBuffer[++s] = base64CharCode[64]    # padding
 
         when 2
+            # read two bytes only
             word = (buffer_u8[N] << 16) | (buffer_u8[N+1] << 8)
 
-            code.push(base64Code[(word & 0xFC0000) >> 18])
-            code.push(base64Code[(word & 0x03F000) >> 12])
-            code.push(base64Code[(word & 0x000FC0) >> 6])
-            code.push(base64Code[64])   # padding
+            # get the character code for each element of word
+            codeBuffer[++s] = base64CharCode[(word & 0xFC0000) >> 18]
+            codeBuffer[++s] = base64CharCode[(word & 0x03F000) >> 12]
+            codeBuffer[++s] = base64CharCode[(word & 0x000FC0) >> 6]
+            codeBuffer[++s] = base64CharCode[64]     # padding
 
-    return code.join('')
+
+    str = String.fromCharCode.apply(null, codeBuffer)
+    return str
 
 
 ###

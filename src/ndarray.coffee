@@ -110,8 +110,6 @@ registerType(int32)
 registerType(float32)
 registerType(float64)
 
-console.log(DTYPES_TABLE)
-
 
 ###
 N-Dimensional array container

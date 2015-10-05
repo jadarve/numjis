@@ -8,6 +8,9 @@ local
 # documentation output
 docs
 
+# html tests
+html
+
 
 ###########################################################
 # Sublime Text

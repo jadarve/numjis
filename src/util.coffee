@@ -99,8 +99,30 @@ toBase64 = (buffer) ->
             codeBuffer[++s] = base64CharCode[64]     # padding
 
 
-    str = String.fromCharCode.apply(null, codeBuffer)
-    return str
+    # str = String.fromCharCode.apply(null, codeBuffer)
+    # return str
+    return utf8CodeToString(codeBuffer)
+
+
+###
+Transform an array containing UTF-8 character codes to string
+
+The code is based on the answer provided in StackOverflow: 
+http://stackoverflow.com/questions/12710001/how-to-convert-uint8-array-to-base64-encoded-string/12713326#12713326
+
+@param [Uint8Array] codeBuffer UTF-8 characters code buffer
+@param [int, optional] chunk  Chunk size to which the conversion
+  is applied at once.
+
+@return [String] encoded string
+###
+utf8CodeToString = (codeBuffer, chunk=0x8000) ->
+
+    strList = []
+    for n in [0...codeBuffer.byteLength] by chunk
+        strList.push(String.fromCharCode.apply(null, codeBuffer.subarray(n, n+chunk)))
+
+    return strList.join('')
 
 
 ###

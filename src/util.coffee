@@ -50,7 +50,7 @@ printHex = (arr) ->
     for b in view
         str += b.toString(16)
 
-    return str
+    console.log(str)
 
 
 ###
@@ -222,26 +222,17 @@ Creates a NDArray from a JSON string
 ###
 fromJson = (str, includeParenthesis=true) ->
 
+    # evaluate JSON string
     obj = if includeParenthesis then eval('(' + str + ')') else eval(str)
-    # console.log(obj.dtype)
-    # console.log(obj.shape)
 
     try
         dtype = nd.typeFromName(obj.dtype)
         shape = obj.shape
         buffer = obj.buffer
-        console.log('dtype: ' + dtype.name)
-        console.log('shape: ' + shape)
-        console.log('buffer: ' + buffer)
-        
-
         arr = new nd.NDArray(shape, dtype, fromBase64(buffer))
-        print(arr)
         return arr
     catch e
         throw e
-
-    
 
 
 module.exports = 

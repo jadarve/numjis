@@ -221,11 +221,18 @@ class NDArray
             when 'int32' then new Int32Array(@buffer)
             when 'float32' then new Float32Array(@buffer)
             when 'float64' then new Float64Array(@buffer)
-            else throw new error.NumjisException('Unexpected array type, got: ' + @dtype.name)
+            else throw new error.NumjisException('Unexpected array type name, got: ' + @dtype.name)
 
 
 
+###
+Creates a 1D array of elements in sequences from start to stop with step increments
 
+@param [number] start start value.
+@paran [number] stop stop value.
+@param [number] step step value.
+@param [dtype, optional] dtype array data type.
+###
 arange = (start, stop, step=1, dtype=float32) ->
 
     length = Math.floor((stop-start)/step)
@@ -237,14 +244,14 @@ arange = (start, stop, step=1, dtype=float32) ->
     return arr
 
 
+###
+Returns a copy of an array
+
+@param [arr, NDArray] array to copy
+
+@return [cpy, NDArray] array copy.
+###
 copy = (arr) ->
-    ###
-    Returns a copy of an array
-
-    @param [arr, NDArray] array to copy
-
-    @return [cpy, NDArray] array copy.
-    ###
 
     if !arr instanceof NDArray
         throw new error.NumjisException('Array argument must be and instance of NDArray')

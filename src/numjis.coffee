@@ -1,8 +1,8 @@
-Numjis = {}
+NJ = {}
 
 
 # If the library is used in a browser
-window.Numjis = Numjis if window?
+window.NJ = NJ if window?
 
 appendModule = (root, module) ->
     """
@@ -16,9 +16,9 @@ nd = require('./ndarray')
 util = require('./util')
 
 
-appendModule(Numjis, require('./ndarray'))
-appendModule(Numjis, require('./util'))
-appendModule(Numjis, require('./error'))
+appendModule(NJ, require('./ndarray'))
+appendModule(NJ, require('./util'))
+appendModule(NJ, require('./error'))
 
 
-module.exports = Numjis
+module.exports = NJ

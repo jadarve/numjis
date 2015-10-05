@@ -25,7 +25,7 @@ Print a NDArray to console
 print = (arr) ->
 
     if !arr instanceof nd.NDArray
-        throw 'argument is not a NDArray object'
+        throw new error.NumjisException('argument is not a NDArray object')
 
     dataStr = '['
     for n in [0...arr.length]
@@ -40,6 +40,10 @@ Print the bytes of a NDArray in hexadecimal code.
 @param [NDArray] arr NDArray.
 ###
 printHex = (arr) ->
+
+    if !arr instanceof nd.NDArray
+        throw new error.NumjisException('argument is not a NDArray object')
+
     view = new Uint8Array(arr.buffer)
 
     str = ''
@@ -62,6 +66,10 @@ http://stackoverflow.com/questions/12710001/how-to-convert-uint8-array-to-base64
 @return [String] encoded string
 ###
 utf8CodeToString = (codeBuffer, chunk=0x8000) ->
+
+    if !codeBuffer instanceof Uint8Array
+        throw new error.NumjisException('argument must be an Uint8Array object')
+
 
     strList = []
     for n in [0...codeBuffer.byteLength] by chunk
@@ -189,8 +197,57 @@ fromBase64 = (str) ->
     return buffer
 
 
+###
+Returns a JSON representation of the array
+###
+toJson = (arr, addParenthesis=false) ->
+
+    if !arr instanceof nd.NDArray
+        throw new error.NumjisException('argument is not a NDArray object')
+
+    strList = []
+    strList.push('(') if addParenthesis
+    strList.push('{')
+    strList.push('dtype : "' + arr.dtype.name + '",')
+    strList.push('shape : [' + arr.shape + '],')
+    strList.push('buffer : "' + toBase64(arr.buffer) + '"')
+    strList.push('}')
+    strList.push(')') if addParenthesis
+
+    return strList.join('\n')
+
+
+###
+Creates a NDArray from a JSON string
+###
+fromJson = (str, includeParenthesis=true) ->
+
+    obj = if includeParenthesis then eval('(' + str + ')') else eval(str)
+    # console.log(obj.dtype)
+    # console.log(obj.shape)
+
+    try
+        dtype = nd.typeFromName(obj.dtype)
+        shape = obj.shape
+        buffer = obj.buffer
+        console.log('dtype: ' + dtype.name)
+        console.log('shape: ' + shape)
+        console.log('buffer: ' + buffer)
+        
+
+        arr = new nd.NDArray(shape, dtype, fromBase64(buffer))
+        print(arr)
+        return arr
+    catch e
+        throw e
+
+    
+
+
 module.exports = 
     print : print
     printHex : printHex
     toBase64 : toBase64
     fromBase64 : fromBase64
+    toJson : toJson
+    fromJson : fromJson

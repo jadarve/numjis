@@ -1,4 +1,5 @@
 error = require('./error')
+# util = require('./util')      # Cannot do circular dependencies
 
 ###
 Unsigned Integer 8 bits
@@ -56,6 +57,60 @@ float64 =
     size : 8
     name : 'float64'
 
+
+###
+Data types table
+###
+DTYPES_TABLE = new Object()
+
+
+###
+Register a new type in the type table
+
+@param [object] dtype Data type object description.
+  It should be an object of the form
+  dtype = {
+    name : 'name',
+    size : N
+  }
+  where N is the size of the type in bytes.
+
+@throws NumjisException if dtype is a malformed object.
+###
+registerType = (dtype) ->
+
+    if !dtype.name
+        throw new error.NumjisException('Dtype object should have a name property')
+
+    if !dtype.size
+        throw new error.NumjisException('Dtype object should have a size property')
+
+    DTYPES_TABLE[dtype.name] = {name : dtype.name, size : dtype.size}
+
+
+###
+Return a dtype object given its name.
+###
+typeFromName = (name) ->
+    dtype = DTYPES_TABLE[name]
+
+    if typeof dtype == 'undefined' 
+        throw new error.NumjisException('Dtype not found, name: ' + name)
+
+    return dtype
+
+
+# register default dtypes
+registerType(uint8)
+registerType(uint16)
+registerType(uint32)
+registerType(int8)
+registerType(int16)
+registerType(int32)
+registerType(float32)
+registerType(float64)
+
+console.log(DTYPES_TABLE)
 
 
 ###
@@ -157,16 +212,16 @@ class NDArray
             @buffer = buffer
 
         # create data view
-        @data = switch @dtype
-            when uint8 then new Uint8Array(@buffer)
-            when int8 then new Int8Array(@buffer)
-            when uint16 then new Uint16Array(@buffer)
-            when int16 then new Int16Array(@buffer)
-            when uint32 then new Uint32Array(@buffer)
-            when int32 then new Int32Array(@buffer)
-            when float32 then new Float32Array(@buffer)
-            when float64 then new Float64Array(@buffer)
-            else throw new error.NumjisException('Unexpected array type, got: ' + @dtype)
+        @data = switch @dtype.name
+            when 'uint8' then new Uint8Array(@buffer)
+            when 'int8' then new Int8Array(@buffer)
+            when 'uint16' then new Uint16Array(@buffer)
+            when 'int16' then new Int16Array(@buffer)
+            when 'uint32' then new Uint32Array(@buffer)
+            when 'int32' then new Int32Array(@buffer)
+            when 'float32' then new Float32Array(@buffer)
+            when 'float64' then new Float64Array(@buffer)
+            else throw new error.NumjisException('Unexpected array type, got: ' + @dtype.name)
 
 
 
@@ -199,21 +254,6 @@ copy = (arr) ->
     return new NDArray(arr.shape, arr.dtype, bufferCopy)
 
 
-# NOTE: This is not working! write own base64 coding/decoding?
-# atob = require('atob')
-# btoa = require('btoa')
-decode = (str, shape, dtype) ->
-    
-    try
-        # buffer = new ArrayBuffer(btoa(str))
-        return
-
-    catch err # InvalidCharacterError from atob
-        throw new error.NumjisException('Error decoding array data: ' + err)
-
-    return new NDArray(shape, dtype, buffer)
-
-
 reshape = (arr, shape) ->
     return
 
@@ -221,6 +261,9 @@ reshape = (arr, shape) ->
 module.exports = 
 
     # constants
+    DTYPES_TABLE : DTYPES_TABLE
+
+    # dtypes
     uint8 : uint8
     int8 : int8
     uint16 : uint16
@@ -234,9 +277,10 @@ module.exports =
     NDArray : NDArray
 
     # functions
+    registerType : registerType
+    typeFromName : typeFromName
     copy : copy
     arange : arange
-    decode : decode
     reshape : reshape
 
 

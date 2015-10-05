@@ -1,17 +1,5 @@
 nd = require('./ndarray')
 
-print = (arr) ->
-
-    if !arr instanceof nd.NDArray
-        throw 'argument is not a NDArray object'
-
-    dataStr = '['
-    for n in [0...arr.length]
-        dataStr += arr.data[n] +  (if n < arr.length-1 then ', ' else '')
-    dataStr += ']'
-
-    console.log(dataStr)
-
 
 ###
 Base 64 code used at toBase64 and fromBase64 methods
@@ -26,6 +14,60 @@ base64CharCode = new Uint8Array(base64Code.length)
 # get char codes from base64Code
 for i in [0...base64Code.length]
     base64CharCode[i] = base64Code.charCodeAt(i)
+
+
+###
+Print a NDArray to console
+
+@param [NDArray] arr NDArray to print.
+
+###
+print = (arr) ->
+
+    if !arr instanceof nd.NDArray
+        throw 'argument is not a NDArray object'
+
+    dataStr = '['
+    for n in [0...arr.length]
+        dataStr += arr.data[n] +  (if n < arr.length-1 then ', ' else '')
+    dataStr += ']'
+
+    console.log(dataStr)
+
+###
+Print the bytes of a NDArray in hexadecimal code.
+
+@param [NDArray] arr NDArray.
+###
+printHex = (arr) ->
+    view = new Uint8Array(arr.buffer)
+
+    str = ''
+    for b in view
+        str += b.toString(16)
+
+    return str
+
+
+###
+Transform an array containing UTF-8 character codes to string
+
+The code is based on the answer provided in StackOverflow: 
+http://stackoverflow.com/questions/12710001/how-to-convert-uint8-array-to-base64-encoded-string/12713326#12713326
+
+@param [Uint8Array] codeBuffer UTF-8 characters code buffer
+@param [int, optional] chunk  Chunk size to which the conversion
+  is applied at once.
+
+@return [String] encoded string
+###
+utf8CodeToString = (codeBuffer, chunk=0x8000) ->
+
+    strList = []
+    for n in [0...codeBuffer.byteLength] by chunk
+        strList.push(String.fromCharCode.apply(null, codeBuffer.subarray(n, n+chunk)))
+
+    return strList.join('')
 
 
 ###
@@ -105,36 +147,50 @@ toBase64 = (buffer) ->
 
 
 ###
-Transform an array containing UTF-8 character codes to string
-
-The code is based on the answer provided in StackOverflow: 
-http://stackoverflow.com/questions/12710001/how-to-convert-uint8-array-to-base64-encoded-string/12713326#12713326
-
-@param [Uint8Array] codeBuffer UTF-8 characters code buffer
-@param [int, optional] chunk  Chunk size to which the conversion
-  is applied at once.
-
-@return [String] encoded string
-###
-utf8CodeToString = (codeBuffer, chunk=0x8000) ->
-
-    strList = []
-    for n in [0...codeBuffer.byteLength] by chunk
-        strList.push(String.fromCharCode.apply(null, codeBuffer.subarray(n, n+chunk)))
-
-    return strList.join('')
-
-
-###
 Return an ArrayBuffer object with data 
 ###
 fromBase64 = (str) ->
 
-    for c in str
-        console.log(c)
+    S = str.length
+
+    # check the last 2 bytes searching for padding character '='
+    padding = 0
+    if str[S-2] == '='
+        padding = 2
+    else if str[S-1] == '='
+        padding = 1
+
+    # buffer size
+    N = Math.floor(3*(S-padding)/4)
+
+    buffer = new ArrayBuffer(N)
+    bufferView = new Uint8Array(buffer)
+    n = -1
+
+    # decode loop
+    for i in [0...S] by 4
+
+        # Looks for the character index in the base64Code table
+        # TODO: Check if there is a more efficient way to do it. IndexOf seems expensive
+        w0 = base64Code.indexOf(str[i])
+        w1 = base64Code.indexOf(str[i+1])
+        w2 = base64Code.indexOf(str[i+2])
+        w3 = base64Code.indexOf(str[i+3])
+
+        # decode next 3 bytes
+        bufferView[++n] = (w0 << 2) | ((w1 & 0x30) >> 4)
+        bufferView[++n] = ((w1 & 0x0F) << 4) | ((w2 & 0x3C) >> 2)
+        bufferView[++n] = ((w2 & 0x03) << 6) | w3
+
+    # NOTE: It is not required to check for index out of bounds
+    #  in bufferView. If bufferView[++n] is out of bounds, it returns
+    #  undefined and the assignment does not take place.
+
+    return buffer
 
 
 module.exports = 
     print : print
+    printHex : printHex
     toBase64 : toBase64
     fromBase64 : fromBase64

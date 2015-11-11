@@ -239,6 +239,8 @@ class NDArray
       be equal to @see{ndim} property
 
     @return [int] flattened position
+
+    TODO: testing with more than 1 dimension
     ###
     flatPosition: (p) ->
 
@@ -249,6 +251,19 @@ class NDArray
         f = 0
         for d in [0...@ndim]
             f += @stride[d]*p[d]
+
+
+    ###
+    Fill the array with a given constant value
+
+    @param [dtype] value fill value
+    ###
+    fill: (value) ->
+
+        for n in [0...@length]
+            @data[n] = value
+
+    
 
 ###
 Creates a 1D array of elements in sequences from start to stop with step increments

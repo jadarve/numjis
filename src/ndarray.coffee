@@ -222,6 +222,33 @@ class NDArray
             else throw new error.NumjisException('Unexpected array type name, got: ' + @dtype.name)
 
 
+    ###
+    Returns value of the array at a given position
+
+    @param [int array] p position
+    ###
+    at: (p) ->
+        # error check on p occurs at flatCoordinate method
+        return @data[@flatPosition(p)]
+
+
+    ###
+    Returns the flattened position equivalent to p
+
+    @param [int array] p ND-position array. p.length must
+      be equal to @see{ndim} property
+
+    @return [int] flattened position
+    ###
+    flatPosition: (p) ->
+
+        if p.length != @ndim
+            throw new error.NumjisException('incorrect position dimension, got: ' + p.length + ' expecting: ' + @ndim)
+
+        # flattened position
+        f = 0
+        for d in [0...@ndim]
+            f += @stride[d]*p[d]
 
 ###
 Creates a 1D array of elements in sequences from start to stop with step increments
@@ -260,6 +287,7 @@ copy = (arr) ->
 
 
 reshape = (arr, shape) ->
+    # TODO
     return
 
 

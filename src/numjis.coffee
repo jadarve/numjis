@@ -12,13 +12,14 @@ appendModule = (root, module) ->
         root[m] = module[m]
 
 
-nd = require('./ndarray')
-util = require('./util')
+# nd = require('./ndarray')
+# util = require('./util')
 
 
 appendModule(NJ, require('./ndarray'))
 appendModule(NJ, require('./util'))
 appendModule(NJ, require('./error'))
+appendModule(NJ, require('./math'))
 
 
 module.exports = NJ

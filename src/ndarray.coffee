@@ -229,7 +229,14 @@ class NDArray
     ###
     at: (p) ->
         # error check on p occurs at flatCoordinate method
-        return @data[@flatPosition(p)]
+        return @data[@flat(p)]
+
+
+    get : (p) ->
+        return
+
+    set : (value, p) ->
+        return
 
 
     ###

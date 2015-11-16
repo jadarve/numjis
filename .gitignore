@@ -1,4 +1,8 @@
 
+
+# Python
+*.pyc
+
 # lib folder with built Javascript
 lib
 

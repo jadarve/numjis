@@ -1,6 +1,7 @@
 nd = require('./ndarray')
 
 ###
+Returns the sum of an array.
 ###
 sum = (arr, axis=null) ->
 

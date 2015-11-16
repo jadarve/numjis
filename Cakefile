@@ -235,13 +235,18 @@ mocha = (options, callback) ->
   
   launch 'mocha', options, callback
 
+
+docs_callback = ->
+  console.log('completed')
+
 # ## *docco*
 #
 # **given** optional function as callback
 # **then** invoke launch passing docco command
 docco = (callback) ->
   #if moduleExists('docco')
-  walk 'src', (err, files) -> launch 'docco', files, callback
+  # walk 'src', (err, files) -> launch 'docco', files, callback
+  walk 'src', (err, files) -> launch 'codo', files, docs_callback
 
 
 bundle_callback = ->

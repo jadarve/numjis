@@ -34,7 +34,7 @@ Unsigned Integer 16 bits
 ###
 uint32 =
     size : 4
-    name : 'uint16'
+    name : 'uint32'
 
 ###
 Integer 32 bits
@@ -242,7 +242,7 @@ class NDArray
 
     TODO: testing with more than 1 dimension
     ###
-    flatPosition: (p) ->
+    flat: (p) ->
 
         if p.length != @ndim
             throw new error.NumjisException('incorrect position dimension, got: ' + p.length + ' expecting: ' + @ndim)
@@ -251,6 +251,8 @@ class NDArray
         f = 0
         for d in [0...@ndim]
             f += @stride[d]*p[d]
+
+        return f
 
 
     ###
@@ -263,6 +265,19 @@ class NDArray
         for n in [0...@length]
             @data[n] = value
 
+
+###
+Creates a ND-array filled with zeros
+
+@param [int list] shape array shape
+@param [dtype, optional] array type
+
+@return NDArray object
+###
+zeros = (shape, dtype=float32) ->
+
+    arr = new NDArray(shape, dtype=dtype)
+    return arr
     
 
 ###
@@ -327,6 +342,7 @@ module.exports =
     # functions
     registerType : registerType
     typeFromName : typeFromName
+    zeros : zeros
     copy : copy
     arange : arange
     reshape : reshape

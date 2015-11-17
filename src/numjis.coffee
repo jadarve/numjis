@@ -20,6 +20,7 @@ appendModule(NJ, require('./ndarray'))
 appendModule(NJ, require('./util'))
 appendModule(NJ, require('./error'))
 appendModule(NJ, require('./math'))
+appendModule(NJ, require('./surface'))
 
 
 module.exports = NJ

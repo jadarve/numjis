@@ -17,12 +17,11 @@ for i in [0...base64Code.length]
 
 
 ###
-Print a NDArray to console
+Return a string with print version of array
 
 @param [NDArray] arr NDArray to print.
-
 ###
-print = (arr) ->
+sprint = (arr) ->
 
     if !arr instanceof nd.NDArray
         throw new error.NumjisException('argument is not a NDArray object')
@@ -31,6 +30,18 @@ print = (arr) ->
     for n in [0...arr.length]
         dataStr += arr.data[n] +  (if n < arr.length-1 then ', ' else '')
     dataStr += ']'
+
+    return dataStr
+
+###
+Print a NDArray to console
+
+@param [NDArray] arr NDArray to print.
+
+###
+print = (arr) ->
+
+    dataStr = sprint(arr)
 
     console.log(dataStr)
 
@@ -236,6 +247,7 @@ fromJson = (str, includeParenthesis=true) ->
 
 
 module.exports = 
+    sprint : sprint
     print : print
     printHex : printHex
     toBase64 : toBase64

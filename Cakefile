@@ -9,7 +9,7 @@
 # * clean - clean generated .js files
 files = [
   'lib'
-  'src'
+  'coffee'
 ]
 
 fs = require 'fs'
@@ -245,8 +245,8 @@ docs_callback = ->
 # **then** invoke launch passing docco command
 docco = (callback) ->
   #if moduleExists('docco')
-  # walk 'src', (err, files) -> launch 'docco', files, callback
-  walk 'src', (err, files) -> launch 'codo', files, docs_callback
+  # walk 'coffee', (err, files) -> launch 'docco', files, callback
+  walk 'coffee', (err, files) -> launch 'codo', files, docs_callback
 
 
 bundle_callback = ->

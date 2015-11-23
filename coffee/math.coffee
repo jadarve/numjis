@@ -1,11 +1,11 @@
-nd = require('./ndarray')
+# nd = require('./ndarray')
 
 ###
 Returns the sum of an array.
 ###
 sum = (arr, axis=null) ->
 
-    if !arr instanceof nd.NDArray
+    if !arr instanceof NJ.NDArray
         throw new error.NumjisException('argument is not a NDArray object')
 
     if axis == null
@@ -22,7 +22,7 @@ sum = (arr, axis=null) ->
 
     # creates an array from dimension 0 to axis -1
     sshape = arr.shape[0...axis]
-    sumArr = new nd.NDArray(sshape, arr.dtype)
+    sumArr = new NJ.NDArray(sshape, arr.dtype)
 
     # sum the elements over axis
     # HOW?

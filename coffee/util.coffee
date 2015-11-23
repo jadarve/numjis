@@ -1,4 +1,4 @@
-nd = require('./ndarray')
+# nd = require('./ndarray')
 
 
 ###
@@ -23,8 +23,8 @@ Return a string with print version of array
 ###
 sprint = (arr) ->
 
-    if !arr instanceof nd.NDArray
-        throw new error.NumjisException('argument is not a NDArray object')
+    if !arr instanceof NJ.NDArray
+        throw new NJ.NumjisException('argument is not a NDArray object')
 
     dataStr = '['
     for n in [0...arr.length]
@@ -52,8 +52,8 @@ Print the bytes of a NDArray in hexadecimal code.
 ###
 printHex = (arr) ->
 
-    if !arr instanceof nd.NDArray
-        throw new error.NumjisException('argument is not a NDArray object')
+    if !arr instanceof NJ.NDArray
+        throw new NJ.NumjisException('argument is not a NDArray object')
 
     view = new Uint8Array(arr.buffer)
 
@@ -79,7 +79,7 @@ http://stackoverflow.com/questions/12710001/how-to-convert-uint8-array-to-base64
 utf8CodeToString = (codeBuffer, chunk=0x8000) ->
 
     if !codeBuffer instanceof Uint8Array
-        throw new error.NumjisException('argument must be an Uint8Array object')
+        throw new NJ.NumjisException('argument must be an Uint8Array object')
 
 
     strList = []
@@ -213,8 +213,8 @@ Returns a JSON representation of the array
 ###
 toJson = (arr, addParenthesis=false) ->
 
-    if !arr instanceof nd.NDArray
-        throw new error.NumjisException('argument is not a NDArray object')
+    if !arr instanceof NJ.NDArray
+        throw new NJ.NumjisException('argument is not a NDArray object')
 
     strList = []
     strList.push('(') if addParenthesis
@@ -237,10 +237,10 @@ fromJson = (str, includeParenthesis=true) ->
     obj = if includeParenthesis then eval('(' + str + ')') else eval(str)
 
     try
-        dtype = nd.typeFromName(obj.dtype)
+        dtype = NJ.typeFromName(obj.dtype)
         shape = obj.shape
         buffer = obj.buffer
-        arr = new nd.NDArray(shape, dtype, fromBase64(buffer))
+        arr = new NJ.NDArray(shape, dtype, fromBase64(buffer))
         return arr
     catch e
         throw e

@@ -1,19 +1,19 @@
-nd = require('./ndarray')
+# nd = require('./ndarray')
 
 
 surfaceUVs = (arr) ->
 
-    if !arr instanceof nd.NDArray
-        throw new error.NumjisException('argument is not a NDArray object')
+    if !arr instanceof NJ.NDArray
+        throw new NJ.NumjisException('argument is not a NDArray object')
 
     if !(arr.ndim == 2 || arr.ndim == 3)
-        throw new error.NumjisException('Array dimensions should be 2 or 3, got: ' + arr.ndim)
+        throw new NJ.NumjisException('Array dimensions should be 2 or 3, got: ' + arr.ndim)
 
     
     height = arr.shape[0]
     width = arr.shape[1]
 
-    UV = new nd.NDArray([height, width, 2], nd.float32)
+    UV = new NJ.NDArray([height, width, 2], NJ.float32)
 
     for r in [0...height]
         for c in [0...width]
@@ -26,17 +26,17 @@ surfaceUVs = (arr) ->
 
 surfaceVertexNormals = (arr) ->
     
-    if !arr instanceof nd.NDArray
-        throw new error.NumjisException('argument is not a NDArray object')
+    if !arr instanceof NJ.NDArray
+        throw new NJ.NumjisException('argument is not a NDArray object')
 
     if !(arr.ndim == 2 || arr.ndim == 3)
-        throw new error.NumjisException('Array dimensions should be 2 or 3, got: ' + arr.ndim)
+        throw new NJ.NumjisException('Array dimensions should be 2 or 3, got: ' + arr.ndim)
 
     
     height = arr.shape[0]
     width = arr.shape[1]
 
-    normals = new nd.NDArray([height, width, 3], nd.float32)
+    normals = new NJ.NDArray([height, width, 3], NJ.float32)
 
     for r in [0...height]
         for c in [0...width]
@@ -54,17 +54,17 @@ surfaceVertexNormals = (arr) ->
 
 surfaceFaces = (arr) ->
     
-    if !arr instanceof nd.NDArray
-        throw new error.NumjisException('argument is not a NDArray object')
+    if !arr instanceof NJ.NDArray
+        throw new NJ.NumjisException('argument is not a NDArray object')
 
     if !(arr.ndim == 2 || arr.ndim == 3)
-        throw new error.NumjisException('Array dimensions should be 2 or 3, got: ' + arr.ndim)
+        throw new NJ.NumjisException('Array dimensions should be 2 or 3, got: ' + arr.ndim)
 
     
     height = arr.shape[0]
     width = arr.shape[1]
 
-    faces = new nd.NDArray([height-1, width-1, 6], nd.uint32)
+    faces = new NJ.NDArray([height-1, width-1, 6], NJ.uint32)
 
     for r in [0...height-1]
         for c in [0...width-1]

@@ -1,4 +1,4 @@
-error = require('./error')
+# error = require('./error')
 # util = require('./util')      # Cannot do circular dependencies
 
 ###
@@ -80,10 +80,10 @@ Register a new type in the type table
 registerType = (dtype) ->
 
     if !dtype.name
-        throw new error.NumjisException('Dtype object should have a name property')
+        throw new NJ.NumjisException('Dtype object should have a name property')
 
     if !dtype.size
-        throw new error.NumjisException('Dtype object should have a size property')
+        throw new NJ.NumjisException('Dtype object should have a size property')
 
     DTYPES_TABLE[dtype.name] = {name : dtype.name, size : dtype.size}
 
@@ -95,7 +95,7 @@ typeFromName = (name) ->
     dtype = DTYPES_TABLE[name]
 
     if typeof dtype == 'undefined' 
-        throw new error.NumjisException('Dtype not found, name: ' + name)
+        throw new NJ.NumjisException('Dtype not found, name: ' + name)
 
     return dtype
 
@@ -202,7 +202,7 @@ class NDArray
         else
             # check if the byte length is the required
             if buffer.byteLength != @length*@dtype.size
-                throw new error.NumjisException('insufficient buffer size to store 
+                throw new NJ.NumjisException('insufficient buffer size to store 
                     array elements: got ' + buffer.byteLength +
                     ' bytes, required: ' + @length*@dtype.size)
                 
@@ -219,7 +219,7 @@ class NDArray
             when 'int32' then new Int32Array(@buffer)
             when 'float32' then new Float32Array(@buffer)
             when 'float64' then new Float64Array(@buffer)
-            else throw new error.NumjisException('Unexpected array type name, got: ' + @dtype.name)
+            else throw new NJ.NumjisException('Unexpected array type name, got: ' + @dtype.name)
 
 
     ###
@@ -252,7 +252,7 @@ class NDArray
     flat: (p) ->
 
         if p.length != @ndim
-            throw new error.NumjisException('incorrect position dimension, got: ' + p.length + ' expecting: ' + @ndim)
+            throw new NJ.NumjisException('incorrect position dimension, got: ' + p.length + ' expecting: ' + @ndim)
 
         # flattened position
         f = 0
@@ -314,7 +314,7 @@ Creates a 1D array from an iterable object
 ###
 array = (values, dtype=float32) ->
 
-    arr = new NDArray(values.length, dtype=dtype)
+    arr = new NDArray([values.length], dtype=dtype)
 
     for n in [0...values.length]
         arr.data[n] = values[n]
@@ -331,7 +331,7 @@ Returns a copy of an array
 copy = (arr) ->
 
     if !arr instanceof NDArray
-        throw new error.NumjisException('Array argument must be and instance of NDArray')
+        throw new NJ.NumjisException('Array argument must be and instance of NDArray')
 
     # creates a copy of the storage buffer
     bufferCopy = arr.buffer.slice(0)

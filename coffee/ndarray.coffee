@@ -300,11 +300,26 @@ arange = (start, stop, step=1, dtype=float32) ->
     length = Math.floor((stop-start)/step)
 
     arr = new NDArray([length], dtype)
-    for n in [0..arr.length]
+    for n in [0...arr.length]
         arr.data[n] = start + n*step
 
     return arr
 
+###
+Creates a 1D array from an iterable object
+
+@param [Array] values iterable with array values.
+
+@return NDArray object.
+###
+array = (values, dtype=float32) ->
+
+    arr = new NDArray(values.length, dtype=dtype)
+
+    for n in [0...values.length]
+        arr.data[n] = values[n]
+
+    return arr
 
 ###
 Returns a copy of an array
@@ -353,5 +368,5 @@ module.exports =
     copy : copy
     arange : arange
     reshape : reshape
-
+    array : array
 
